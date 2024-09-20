@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #2f363e;
+        }
+
+        .menu {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu li {
+            position: absolute;
+            left: 0;
+            list-style: none;
+            transform-origin: 130px;
+            transition: 0.5s;
+            transition-delay: calc(0.1s * var(--i));
+            transform: rotate(0deg) translateX(100px);
+        }
+
+        .menu.active li {
+            transform: rotate(calc(360deg / 8 * var(--i)));
+        }
+
+        .menu li a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5em;
+            border-radius: 50%;
+            transform: rotate(calc(360deg / -8 * var(--i)));
+            color: transparent;
+            transition: 1s;
+            transition-delay: 0.5s;
+        }
+
+        .menu.active li a {
+            color: var(--clr);
+        }
+
+        .menu li a::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 2px;
+            border-radius: 2px;
+            background-color: var(--clr);
+            transform: rotate(calc(var(--i) * 90deg)) translate(0, 25px);
+            transition: height 0.5s, width 0.5s, transform 0.5s;
+            transition-delay: 0s, 0s, 0s;
+        }
+
+        .menu.active li a::before {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--clr);
+            box-sizing: border-box;
+            background-color: #2f363e;
+            transform: rotate(calc(var(--i) * 90deg)) translate(0px, 0px);
+            transition: transform 0.5s, height 0.5s, width 0.5s;
+            transition-delay: 1s, 1.5s, 1.5s;
+            rotate: 135deg;
+        }
+
+        .menu.active li:hover a::before {
+            background-color: var(--clr);
+            color: #2f363e;
+            box-shadow: 0 0 15px var(--clr),
+                        0 0 110px var(--clr),
+                        0 0 100px var(--clr);
+        }
+
+        .menu li a::after {
+            content: '';
+            position: absolute;
+            left: 50px;
+            width: 20px;
+            height: 2px;
+            background-color: var(--clr);
+            z-index: -1;
+            transform: rotate(calc(var(--i) * 0deg)) translate(15px, 0px);
+            transition-delay: 0.5s;
+        }
+
+        .menu.active li a::after {
+            left: 10px;
+            width: 40px;
+            transform: rotate(calc(var(--i) * 45deg)) translate(50px, 0px);
+        }
+
+        .menu.active li:hover a ion-icon {
+            position: relative;
+            color: #2f363e;
+            z-index: 100000;
+        }
+
+        .menuToggle {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 2em;
+            transition: transform 1.5s;
+        }
+
+        .menu.active .menuToggle {
+            transform: rotate(315deg);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal img {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 10px;
+        }
+
+        .modal .content {
+            color: white;
+            font-size: 24px;
+            background-color: #2f363e;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 1400px;
+            height: 300px;
+            position: absolute;
+            bottom: 53%;
+            font-size: 25px;
+        }
+
+        /* Person Modal Content */
+        .person-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .person-content img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+    </style>
+    <div class="text">
+        <p>Information</p>
+    </div>
+</head>
+
+<body>
+    <ul class="menu">
+        <div class="menuToggle"><ion-icon name="add-outline"></ion-icon></div>
+        <li style="--i:0;--clr:#ff2972;">
+            <a href="#"><ion-icon name="home-outline"></ion-icon></a>
+        </li>
+        <li style="--i:1;--clr:#ff9b30;">
+            <a href="javascript:void(0);" id="personIcon"><ion-icon name="person-outline"></ion-icon></a>
+        </li>
+        <li style="--i:2;--clr:#04fc43;">
+            <a href="javascript:void(0);" id="callIcon"><ion-icon name="call-outline"></ion-icon></a>
+        </li>
+        <li style="--i:3;--clr:#dfff40;">
+            <a href="javascript:void(0);" id="mailIcon"><ion-icon name="mail-outline"></ion-icon></a>
+        </li>
+        <li style="--i:7;--clr:#0091ff;">
+            <a href="https://www.facebook.com/hoangfkhanhs.csd"><ion-icon name="logo-facebook"></ion-icon></a>
+        </li>
+        <li style="--i:4;--clr:#ec27f3;">
+            <a href="https://www.instagram.com/hoangfkhanhs/"><ion-icon name="logo-instagram"></ion-icon></a>
+        </li>
+        <li style="--i:5;--clr:#00e0fe;">
+            <a href="https://discord.gg/CW4fZwHh"><ion-icon name="logo-discord"></ion-icon></a>
+        </li>
+        <li style="--i:6;--clr:#fa40b0;">
+            <a href="javascript:void(0);" id="qrCodeIcon"><ion-icon name="card-outline"></ion-icon></a>
+        </li>
+    </ul>
+
+    <!-- Modal to display QR code -->
+    <div class="modal" id="qrModal">
+        <span class="close" id="closeQrModal">&times;</span>
+        <img src="img/qr.jpg" alt="QR Code">
+    </div>
+
+    <!-- Modal to display phone number -->
+    <div class="modal" id="phoneModal">
+        <span class="close" id="closePhoneModal">&times;</span>
+        <div class="content">Phone Number: (+84) 0869 632 923</div>
+    </div>
+
+    <!-- Modal to display email -->
+    <div class="modal" id="emailModal">
+        <span class="close" id="closeEmailModal">&times;</span>
+        <div class="content">Email: ngxhoangkhanh@gmail.com</div>
+    </div>
+
+    <!-- Modal to display person content (image and text) -->
+    <div class="modal" id="personModal">
+        <span class="close" id="closePersonModal">&times;</span>
+        <div class="person-content">
+            <img src="img/OIP.jpg" alt="Person Image">
+            <p>Hehe</p>
+            <p>Web đang làm nên phần này chưa biết nên để gì cả</p>
+            <p>Tutu rồi update chớ làm gì căng Haha</p>
+        </div>
+    </div>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        let menuToggle = document.querySelector('.menuToggle');
+        let menu = document.querySelector('.menu');
+        menuToggle.onclick = function () {
+            menu.classList.toggle('active');
+        }
+
+        // Get modal elements for QR code, phone number, email, and person
+        const qrModal = document.getElementById("qrModal");
+        const phoneModal = document.getElementById("phoneModal");
+        const emailModal = document.getElementById("emailModal");
+        const personModal = document.getElementById("personModal");
+        const qrCodeIcon = document.getElementById("qrCodeIcon");
+        const callIcon = document.getElementById("callIcon");
+        const mailIcon = document.getElementById("mailIcon");
+        const personIcon = document.getElementById("personIcon");
+        const closeQrModal = document.getElementById("closeQrModal");
+        const closePhoneModal = document.getElementById("closePhoneModal");
+        const closeEmailModal = document.getElementById("closeEmailModal");
+        const closePersonModal = document.getElementById("closePersonModal");
+
+        // Show QR code modal
+        qrCodeIcon.onclick = function () {
+            qrModal.style.display = "flex";
+        }
+
+        // Show phone number modal
+        callIcon.onclick = function () {
+            phoneModal.style.display = "flex";
+        }
+
+        // Show email modal
+        mailIcon.onclick = function () {
+            emailModal.style.display = "flex";
+        }
+
+        // Show person modal
+        personIcon.onclick = function () {
+            personModal.style.display = "flex";
+        }
+
+        // Close QR modal
+        closeQrModal.onclick = function () {
+            qrModal.style.display = "none";
+        }
+
+        // Close phone modal
+        closePhoneModal.onclick = function () {
+            phoneModal.style.display = "none";
+        }
+
+        // Close email modal
+        closeEmailModal.onclick = function () {
+            emailModal.style.display = "none";
+        }
+
+        // Close person modal
+        closePersonModal.onclick = function () {
+            personModal.style.display = "none";
+        }
+
+        // Hide modal when clicking outside the content
+        window.onclick = function (event) {
+            if (event.target === qrModal) {
+                qrModal.style.display = "none";
+            } else if (event.target === phoneModal) {
+                phoneModal.style.display = "none";
+            } else if (event.target === emailModal) {
+                emailModal.style.display = "none";
+            } else if (event.target === personModal) {
+                personModal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
